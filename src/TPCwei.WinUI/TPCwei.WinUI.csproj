@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <RootNamespace>TPC.WinUI</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Platforms>x64</Platforms>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWinUI>true</UseWinUI>
+    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <EnableMsixTooling>false</EnableMsixTooling>
+    <PublishSingleFile>false</PublishSingleFile>
+    <AssemblyName>TPC</AssemblyName>
+    <ApplicationIcon>..\..\design\favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260416003" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\TPCwei.App\Interop\NativeInterop.cs" Link="Interop\NativeInterop.cs" />
+    <Compile Include="..\TPCwei.App\Models\AppModels.cs" Link="Models\AppModels.cs" />
+    <Compile Include="..\TPCwei.App\Services\*.cs" Link="Services\%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\build\bin\Debug\p2p_core.dll" Condition="'$(Configuration)' == 'Debug' and Exists('..\..\build\bin\Debug\p2p_core.dll')" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Link="p2p_core.dll" />
+    <None Include="..\..\build\bin\Release\p2p_core.dll" Condition="'$(Configuration)' == 'Release' and Exists('..\..\build\bin\Release\p2p_core.dll')" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Link="p2p_core.dll" />
+    <None Include="..\..\build\bin\Debug\tpcwei_gateway.exe" Condition="'$(Configuration)' == 'Debug' and Exists('..\..\build\bin\Debug\tpcwei_gateway.exe')" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Link="tpcwei_gateway.exe" />
+    <None Include="..\..\build\bin\Release\tpcwei_gateway.exe" Condition="'$(Configuration)' == 'Release' and Exists('..\..\build\bin\Release\tpcwei_gateway.exe')" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Link="tpcwei_gateway.exe" />
+    <None Include="..\tpcwei_meshd\target\release\tpcwei_meshd.exe" Condition="Exists('..\tpcwei_meshd\target\release\tpcwei_meshd.exe')" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Link="tpcwei_meshd.exe" />
+    <None Include="..\..\design\favicon.ico" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Link="favicon.ico" />
+  </ItemGroup>
+
+  <Target Name="CopyWinUIResourceFilesToPublish" AfterTargets="Publish">
+    <ItemGroup>
+      <WinUIResourceFiles Include="$(OutputPath)App.xbf" Condition="Exists('$(OutputPath)App.xbf')" />
+      <WinUIResourceFiles Include="$(OutputPath)ShellWindow.xbf" Condition="Exists('$(OutputPath)ShellWindow.xbf')" />
+      <WinUIResourceFiles Include="$(OutputPath)$(AssemblyName).pri" Condition="Exists('$(OutputPath)$(AssemblyName).pri')" />
+    </ItemGroup>
+    <Copy SourceFiles="@(WinUIResourceFiles)" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="true" />
+  </Target>
+
+  <Target Name="PublishAgentIntoWinUIPublish" AfterTargets="Publish" Condition="'$(RuntimeIdentifier)' == 'win-x64' and '$(PublishAgentIntoWinUIPublish)' != 'false'">
+    <MSBuild Projects="..\TPCwei.Agent\TPCwei.Agent.csproj"
+             Targets="Publish"
+             Properties="Configuration=$(Configuration);RuntimeIdentifier=$(RuntimeIdentifier);PublishDir=$(PublishDir);SelfContained=$(SelfContained);PublishSingleFile=false" />
+  </Target>
+</Project>

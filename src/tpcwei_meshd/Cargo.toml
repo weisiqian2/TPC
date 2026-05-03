@@ -1,0 +1,19 @@
+﻿[package]
+name = "tpcwei_meshd"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+futures = "0.3"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["macros", "net", "rt-multi-thread", "signal", "time"] }
+uuid = { version = "1", features = ["v4"] }
+
+# The sidecar boundary is Rust-first. libp2p is declared here so the next
+# implementation step can replace the local peer registry with real
+# Kademlia/relay behaviours without changing WinUI or Agent JSON-RPC calls.
+libp2p = { version = "0.54", default-features = false, features = ["dns", "identify", "kad", "macros", "noise", "ping", "quic", "relay", "tcp", "tokio", "websocket", "yamux"] }

@@ -1,0 +1,12 @@
+build/
+publish/
+artifacts/
+src/**/bin/
+src/**/obj/
+src/**/target/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.log

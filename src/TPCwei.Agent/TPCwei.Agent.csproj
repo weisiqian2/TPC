@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>TPC.Agent</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\TPCwei.App\Interop\NativeInterop.cs" Link="Interop\NativeInterop.cs" />
+    <Compile Include="..\TPCwei.App\Models\AppModels.cs" Link="Models\AppModels.cs" />
+    <Compile Include="..\TPCwei.App\Services\*.cs" Link="Services\%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\build\bin\Debug\p2p_core.dll" Condition="'$(Configuration)' == 'Debug' and Exists('..\..\build\bin\Debug\p2p_core.dll')" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Link="p2p_core.dll" />
+    <None Include="..\..\build\bin\Release\p2p_core.dll" Condition="'$(Configuration)' == 'Release' and Exists('..\..\build\bin\Release\p2p_core.dll')" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Link="p2p_core.dll" />
+    <None Include="..\..\build\bin\Debug\tpcwei_gateway.exe" Condition="'$(Configuration)' == 'Debug' and Exists('..\..\build\bin\Debug\tpcwei_gateway.exe')" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Link="tpcwei_gateway.exe" />
+    <None Include="..\..\build\bin\Release\tpcwei_gateway.exe" Condition="'$(Configuration)' == 'Release' and Exists('..\..\build\bin\Release\tpcwei_gateway.exe')" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Link="tpcwei_gateway.exe" />
+    <None Include="..\tpcwei_meshd\target\release\tpcwei_meshd.exe" Condition="Exists('..\tpcwei_meshd\target\release\tpcwei_meshd.exe')" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Link="tpcwei_meshd.exe" />
+  </ItemGroup>
+</Project>
